@@ -118,8 +118,13 @@ namespace AIGeneratedCode
             var syntaxTree = CSharpSyntaxTree.ParseText(wrappedCode);
 
             // 添加必要的程序集引用（引用所有已加载的程序集）
+            // Keep one reference per simple name: add-ins can load their own copies of the
+            // same library (e.g. Autodesk.Http.JsonApi in Revit 2027), and Roslyn rejects
+            // duplicate simple names (CS1704), which made every compilation fail.
             var references = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location) && File.Exists(a.Location))
+                .GroupBy(a => a.GetName().Name, StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.OrderByDescending(a => a.GetName().Version).First())
                 .Select(a => MetadataReference.CreateFromFile(a.Location))
                 .Cast<MetadataReference>()
                 .ToList();
