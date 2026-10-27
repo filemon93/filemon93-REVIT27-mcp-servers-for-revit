@@ -203,10 +203,17 @@ public static class GeometryUtils
     {
         // Implement algorithm to calculate intersection
         // Simple method: use Revit API to find intersection
+#if REVIT2027_OR_GREATER
+        using var intersection = line1.Intersect(line2, CurveIntersectResultOption.Detailed);
+        if (intersection.Result != SetComparisonResult.Overlap) return null;
+        var overlaps = intersection.GetOverlaps();
+        return overlaps.Count > 0 ? overlaps[0].Point : null;
+#else
         var results = new IntersectionResultArray();
         if (line1.Intersect(line2, out results) == SetComparisonResult.Overlap && results.Size > 0)
             return results.get_Item(0).XYZPoint;
         return null;
+#endif
     }
 
     /// <summary>
