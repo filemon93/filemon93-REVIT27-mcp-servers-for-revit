@@ -280,37 +280,56 @@ namespace RevitMCPCommandSet.Utils
         public static TransactionOutcome RunTransaction(Document doc, string name, bool resolveErrors, Func<bool> body)
         {
             var failures = new CollectingFailuresPreprocessor(resolveErrors);
-            using (var transaction = new Transaction(doc, name))
+            // Some failures (e.g. "A group has been changed outside group edit mode") are posted
+            // after preprocessing, during commit; they only reach the FailuresProcessing event.
+            EventHandler<Autodesk.Revit.DB.Events.FailuresProcessingEventArgs> onFailures = (sender, args) =>
             {
-                var options = transaction.GetFailureHandlingOptions();
-                options.SetFailuresPreprocessor(failures);
-                options.SetClearAfterRollback(true);
-                transaction.SetFailureHandlingOptions(options);
-
-                transaction.Start();
-                bool keep;
-                try
+                var accessor = args.GetFailuresAccessor();
+                if (accessor.GetDocument().Equals(doc))
                 {
-                    keep = body();
+                    args.SetProcessingResult(failures.PreprocessFailures(accessor));
                 }
-                catch
+            };
+
+            doc.Application.FailuresProcessing += onFailures;
+            try
+            {
+                using (var transaction = new Transaction(doc, name))
                 {
-                    if (transaction.GetStatus() == TransactionStatus.Started)
+                    var options = transaction.GetFailureHandlingOptions();
+                    options.SetFailuresPreprocessor(failures);
+                    options.SetClearAfterRollback(true);
+                    transaction.SetFailureHandlingOptions(options);
+
+                    transaction.Start();
+                    bool keep;
+                    try
+                    {
+                        keep = body();
+                    }
+                    catch
+                    {
+                        if (transaction.GetStatus() == TransactionStatus.Started)
+                        {
+                            transaction.RollBack();
+                        }
+                        throw;
+                    }
+
+                    if (!keep)
                     {
                         transaction.RollBack();
+                        return new TransactionOutcome(false, "rolled back: item errors", failures.Messages);
                     }
-                    throw;
-                }
 
-                if (!keep)
-                {
-                    transaction.RollBack();
-                    return new TransactionOutcome(false, "rolled back: item errors", failures.Messages);
+                    var status = transaction.Commit();
+                    var committed = status == TransactionStatus.Committed;
+                    return new TransactionOutcome(committed, committed ? "committed" : $"rolled back: {status}", failures.Messages);
                 }
-
-                var status = transaction.Commit();
-                var committed = status == TransactionStatus.Committed;
-                return new TransactionOutcome(committed, committed ? "committed" : $"rolled back: {status}", failures.Messages);
+            }
+            finally
+            {
+                doc.Application.FailuresProcessing -= onFailures;
             }
         }
 
