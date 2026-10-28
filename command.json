@@ -122,6 +122,36 @@
       "commandName": "create_dimensions",
       "description": "Create dimension annotations between elements or points in the current view",
       "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "get_element_info",
+      "description": "Get full information about elements: type, level, group, worksharing, location, orientation and parameters",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "get_groups",
+      "description": "List group types and instances with member counts and worksharing state",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "change_element_type",
+      "description": "Change the type of elements in one transaction with a per-element report",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "set_parameters",
+      "description": "Set parameter values on elements or types in project units, with before/after report",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "join_geometry",
+      "description": "Join, unjoin, switch join order or report join status for touching elements",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "cut_geometry",
+      "description": "Cut, uncut or report cut status using solid-solid or instance void cuts",
+      "assemblyPath": "RevitMCPCommandSet.dll"
     }
   ]
 }
