@@ -1,17 +1,17 @@
-﻿// 
+//
 //                       RevitAPI-Solutions
 // Copyright (c) Duong Tran Quang (DTDucas) (baymax.contact@gmail.com)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,14 +31,17 @@ namespace RevitMCPCommandSet.Models.Annotation;
 /// </summary>
 public class DimensionCreationInfo
 {
-    /// <summary>
-    ///     Default constructor
-    /// </summary>
+    [JsonProperty("references")]
+    public List<string> References { get; set; } = new();
+
+    [JsonProperty("referenceMode")]
+    public string ReferenceMode { get; set; } = "exterior";
+
     public DimensionCreationInfo()
     {
         StartPoint = new JZPoint(0, 0, 0);
         EndPoint = new JZPoint(0, 0, 0);
-        ElementIds = new List<int>();
+        ElementIds = new List<long>();
         Options = new Dictionary<string, object>();
     }
 
@@ -64,7 +67,7 @@ public class DimensionCreationInfo
     ///     Elements to dimension
     /// </summary>
     [JsonProperty("elementIds")]
-    public List<int> ElementIds { get; set; }
+    public List<long> ElementIds { get; set; }
 
     /// <summary>
     ///     Dimension type
@@ -76,13 +79,13 @@ public class DimensionCreationInfo
     ///     Dimension style ID
     /// </summary>
     [JsonProperty("dimensionStyleId")]
-    public int DimensionStyleId { get; set; } = -1;
+    public long DimensionStyleId { get; set; } = -1;
 
     /// <summary>
     ///     View ID - view to create dimension in
     /// </summary>
     [JsonProperty("viewId")]
-    public int ViewId { get; set; } = -1;
+    public long ViewId { get; set; } = -1;
 
     /// <summary>
     ///     Additional options

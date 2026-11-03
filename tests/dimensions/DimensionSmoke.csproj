@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>McpDimensionSmoke</AssemblyName>
+    <DefineConstants>REVIT2022_OR_GREATER;REVIT2024_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="2027.*" />
+    <Using Include="Autodesk.Revit.DB" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Compile Include="Smoke.cs" />
+    <Compile Include="../../commandset/Services/AnnotationComponents/Dimension*.cs" />
+    <Compile Include="../../commandset/Services/AnnotationComponents/SpacingFilter.cs" />
+    <Compile Include="../../commandset/Models/Annotation/DimensionCreationInfo.cs" />
+    <Compile Include="../../commandset/Models/Common/JZPoint.cs" />
+  </ItemGroup>
+</Project>

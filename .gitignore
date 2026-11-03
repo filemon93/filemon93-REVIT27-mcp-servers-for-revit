@@ -371,3 +371,7 @@ FodyWeavers.xsd
 # =============================================================================
 .claude/
 .DS_Store
+
+# Release staging and local model database
+artifacts/
+server/revit-data.db*

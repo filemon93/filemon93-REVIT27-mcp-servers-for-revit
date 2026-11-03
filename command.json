@@ -152,6 +152,16 @@
       "commandName": "cut_geometry",
       "description": "Cut, uncut or report cut status using solid-solid or instance void cuts",
       "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "get_dimension_types",
+      "description": "List linear dimension styles",
+      "assemblyPath": "RevitMCPCommandSet.dll"
+    },
+    {
+      "commandName": "dimension_walls_by_guides",
+      "description": "Dimension wall faces or core along finite guide lines",
+      "assemblyPath": "RevitMCPCommandSet.dll"
     }
   ]
 }
